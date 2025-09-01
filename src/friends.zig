@@ -21,7 +21,7 @@ fn get_friends_of_friends_list(allocator: std.mem.Allocator, text: []const u8) !
     var set: std.StringArrayHashMap(bool) = .init(allocator);
     defer set.deinit();
     for (list) |line| {
-        const fof = get_friends_of_friend(allocator, line) catch |err| {
+        const fof = get_friends_of_friend(allocator, line) catch {
             std.log.err("Error getting friends of friend. {s} probably isn't running friends.txt. Let them know!\n", .{line});
             continue;
         };
