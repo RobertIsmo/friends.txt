@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -e
+
+VERSION="{VERSION}"
+BASE_URL="https://robertismo.com/releases/friends.txt/$VERSION"
+
+OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+ARCH="$(uname -m)"
+
+case "$OS" in
+  linux) ;;
+  darwin) OS="macos" ;;
+  *) echo "Unsupported OS: $OS"; exit 1 ;;
+esac
+
+case "$ARCH" in
+  x86_64) ;;
+  aarch64|arm64) ARCH="aarch64" ;;
+  *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
+esac
+
+if [ "$OS" = "linux" ]; then
+    if ldd --version 2>&1 | grep -q musl; then
+        LIBC="musl"
+    else
+        LIBC="gnu"
+    fi
+    ARCHIVE_DIR="$ARCH-linux-$LIBC"
+else
+    ARCHIVE_DIR="$ARCH-macos"
+fi
+
+URL="$BASE_URL/$ARCHIVE_DIR/friends"
+
+if [ "$(id -u)" -eq 0 ]; then
+    DEST="/usr/local/bin"
+else
+    DEST="$HOME/.local/bin"
+    mkdir -p "$DEST"
+fi
+
+echo "Downloading $URL..."
+curl -L "$URL" -o "$DEST/friends"
+
+chmod +x "$DEST/friends"
+
+echo "Installed friends to $DEST/friends"
+echo "Make sure $DEST is in your PATH"

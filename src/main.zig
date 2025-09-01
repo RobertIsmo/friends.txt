@@ -1,4 +1,7 @@
 const std = @import("std");
+const config = @import("config");
+
+const semver = std.SemanticVersion.parse(config.version) catch unreachable;
 
 const f = @import("friends.zig");
 
@@ -7,7 +10,7 @@ const friends02 = @embedFile("embed/friends02");
 const friends03 = @embedFile("embed/friends03");
 
 pub fn main() void {
-    std.debug.print("Version 0.1.3\n", .{});
+    std.debug.print("Version {s}\n", .{config.version});
     const cwd = std.fs.cwd();
     const friends = cwd.makeOpenPath(
         "www/friends",
