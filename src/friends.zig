@@ -1,25 +1,27 @@
 const std = @import("std");
 
-pub fn write_friend_list(allocator: std.mem.Allocator, writer: anytype, text: []const u8) !void {
+pub fn write_friend_list(allocator: std.mem.Allocator, set: *std.StringArrayHashMap(bool), writer: anytype, text: []const u8) !void {
     const list = try read_list(allocator, text);
     for (list) |line| {
+        _ = try set.fetchPut(line, false);
         try writer.print("\t\t\t<li><a href=\"https://{s}\">{s}</a></li>\n", .{ line, line });
     }
 }
 
-pub fn write_friends_of_friends_list(allocator: std.mem.Allocator, writer: anytype, text: []const u8) !void {
-    const list = try get_friends_of_friends_list(allocator, text);
+pub fn write_friends_of_friends_list(allocator: std.mem.Allocator, set: *std.StringArrayHashMap(bool), writer: anytype, text: []const u8) !void {
+    const list = try get_friends_of_friends_list(allocator, set, text);
     defer allocator.free(list);
     for (list) |line| {
         try writer.print("\t\t\t<li><a href=\"https://{s}\">{s}</a></li>\n", .{ line, line });
     }
 }
 
-fn get_friends_of_friends_list(allocator: std.mem.Allocator, text: []const u8) ![][]const u8 {
+fn get_friends_of_friends_list(allocator: std.mem.Allocator, set: *std.StringArrayHashMap(bool), text: []const u8) ![][]const u8 {
     const list = try read_list(allocator, text);
 
-    var set: std.StringArrayHashMap(bool) = .init(allocator);
-    defer set.deinit();
+    var friendsOfFriends: std.ArrayList([]const u8) = .init(allocator);
+    defer friendsOfFriends.deinit();
+
     for (list) |line| {
         const fof = get_friends_of_friend(allocator, line) catch {
             std.log.err("trying to get friends of friend. {s} probably isn't running friends.txt. Let them know!", .{line});
@@ -27,11 +29,14 @@ fn get_friends_of_friends_list(allocator: std.mem.Allocator, text: []const u8) !
         };
         const fofList = try read_list(allocator, fof);
         for (fofList) |fofLine| {
-            _ = try set.fetchPut(fofLine, true);
+            if (!set.contains(fofLine)) {
+                _ = try set.fetchPut(fofLine, true);
+                try friendsOfFriends.append(fofLine);
+            }
         }
     }
 
-    return try allocator.dupe([]const u8, set.keys());
+    return friendsOfFriends.toOwnedSlice();
 }
 
 fn get_friends_of_friend(allocator: std.mem.Allocator, domain: []const u8) ![]const u8 {

@@ -52,7 +52,10 @@ pub fn main() void {
     };
 
     const writer = friendsHtml.writer();
-    f.write_friend_list(allocator, writer, friendsTxt) catch {
+    var friendSet: std.StringArrayHashMap(bool) = .init(allocator);
+    defer friendSet.deinit();
+
+    f.write_friend_list(allocator, &friendSet, writer, friendsTxt) catch {
         std.log.err("Unable to write the friends.txt file.", .{});
         return;
     };
@@ -62,7 +65,7 @@ pub fn main() void {
         return;
     };
 
-    f.write_friends_of_friends_list(allocator, writer, friendsTxt) catch {
+    f.write_friends_of_friends_list(allocator, &friendSet, writer, friendsTxt) catch {
         std.log.err("Unable to write the friends.txt file for friends of friends.", .{});
         return;
     };
