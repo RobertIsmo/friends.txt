@@ -3,7 +3,7 @@ const std = @import("std");
 pub fn write_friend_list(allocator: std.mem.Allocator, writer: anytype, text: []const u8) !void {
     const list = try read_list(allocator, text);
     for (list) |line| {
-        try writer.print("\t\t\t<li><a href=\"{s}\">{s}</a></li>\n", .{ line, line });
+        try writer.print("\t\t\t<li><a href=\"https://{s}\">{s}</a></li>\n", .{ line, line });
     }
 }
 
@@ -11,7 +11,7 @@ pub fn write_friends_of_friends_list(allocator: std.mem.Allocator, writer: anyty
     const list = try get_friends_of_friends_list(allocator, text);
     defer allocator.free(list);
     for (list) |line| {
-        try writer.print("\t\t\t<li><a href=\"{s}\">{s}</a></li>\n", .{ line, line });
+        try writer.print("\t\t\t<li><a href=\"https://{s}\">{s}</a></li>\n", .{ line, line });
     }
 }
 
