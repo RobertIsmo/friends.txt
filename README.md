@@ -5,9 +5,11 @@
 ## Installation
 
 To install to your user at ~/.local/bin
+
 ```curl -sSL https://robertismo.com/releases/friends.txt/install.sh | sh```
 
 To install system-wide at /usr/local/bin
+
 ```curl -sSL https://robertismo.com/releases/friends.txt/install.sh | sudo sh```
 
 Binaries are also available at [https://robertismo.com/releases/friends.txt](https://robertismo.com/releases/friends.txt).
