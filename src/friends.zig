@@ -22,7 +22,7 @@ fn get_friends_of_friends_list(allocator: std.mem.Allocator, text: []const u8) !
     defer set.deinit();
     for (list) |line| {
         const fof = get_friends_of_friend(allocator, line) catch {
-            std.log.err("Error getting friends of friend. {s} probably isn't running friends.txt. Let them know!\n", .{line});
+            std.log.err("trying to get friends of friend. {s} probably isn't running friends.txt. Let them know!", .{line});
             continue;
         };
         const fofList = try read_list(allocator, fof);
