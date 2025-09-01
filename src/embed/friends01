@@ -8,6 +8,7 @@
 </head>
 <body>
 	<main>
-	  	<a href="https://robertismo.com/projects/friends.txt/">Created using friends.txt!</a>
+	  	<a href="https://robertismo.com/projects/friends.txt/">Created using friends.txt!</a> </br>
+		<a href="/">Go back home</a>
 	  	<h1>Friends</h1>
 		<ul>
