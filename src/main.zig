@@ -7,7 +7,7 @@ const friends02 = @embedFile("embed/friends02");
 const friends03 = @embedFile("embed/friends03");
 
 pub fn main() void {
-    std.debug.print("Version 0.1.0\n", .{});
+    std.debug.print("Version 0.1.3\n", .{});
     const cwd = std.fs.cwd();
     const friends = cwd.makeOpenPath(
         "www/friends",
